@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预测结果 - 手串饰品预测系统</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2, h3 {
+            color: #8B4513;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            min-width: 100px;
+        }
+        .material-item {
+            background-color: #f9f5e8;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .material-name {
+            font-weight: bold;
+            color: #8B4513;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .material-property {
+            margin-bottom: 5px;
+        }
+        .button {
+            background-color: #8B4513;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .button:hover {
+            background-color: #A0522D;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 14px;
+        }
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        pre {
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>手串饰品预测结果</h1>
+        </div>
+
+        <div class="section">
+            <h2>基本信息</h2>
+            <div class="info-item">
+                <span class="info-label">姓名：</span>
+                <span>{{ result.prediction.name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">性别：</span>
+                <span>{{ result.prediction.gender }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">出生日期：</span>
+                <span>{{ result.prediction.birth_date }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">出生时间：</span>
+                <span>{{ result.prediction.birth_time }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">生肖：</span>
+                <span>{{ result.prediction.zodiac }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">星座：</span>
+                <span>{{ result.prediction.zodiac_sign }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">五行：</span>
+                <span>{{ result.prediction.five_elements|join(', ') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">幸运数字：</span>
+                <span>{{ result.prediction.lucky_numbers|join(', ') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">幸运颜色：</span>
+                <span>{{ result.prediction.lucky_colors|join(', ') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">所求事项：</span>
+                <span>{{ result.prediction.purpose }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">宗教信仰：</span>
+                <span>{{ result.prediction.religion }}</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>运势预测</h2>
+            <p>{{ result.fortune_prediction }}</p>
+        </div>
+
+        <div class="section">
+            <h2>手串推荐</h2>
+            
+            {% for material in result.bracelet_recommendation.materials %}
+            <div class="material-item">
+                <div class="material-name">{{ material.name }}（{{ material.element }}属性）</div>
+                <div class="material-property">
+                    <strong>颜色：</strong> {{ material.colors|join(', ') }}
+                </div>
+                <div class="material-property">
+                    <strong>功效：</strong> {{ material.effects|join(', ') }}
+                </div>
+                <div class="material-property">
+                    <strong>适合：</strong> {{ material.suitable_for|join(', ') }}
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% if result.bracelet_recommendation.religious_symbols %}
+            <h3>宗教符号推荐</h3>
+            <p>根据您的{{ result.prediction.religion }}信仰，建议在手串上添加以下吉祥物或符号：</p>
+            <p>{{ result.bracelet_recommendation.religious_symbols|join(', ') }}</p>
+            {% endif %}
+            
+            <h3>详细推荐</h3>
+            <pre>{{ result.bracelet_recommendation.recommendation }}</pre>
+        </div>
+
+        <div class="actions">
+            <a href="/" class="button">返回首页</a>
+            <button onclick="window.print()" class="button">打印结果</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>手串饰品预测系统 &copy; 2025</p>
+    </div>
+</body>
+</html>
